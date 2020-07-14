@@ -1,0 +1,8 @@
+!build/
+bin/
+!env/
+env/my.env
+vendor/
+.vscode/
+*.DS_Store
+config/config.json
