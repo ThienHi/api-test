@@ -22,8 +22,20 @@ func Login(c echo.Context) error {
 	var token string
 
 	for _, v := range users {
-		if v.Username == user.Username && v.Password == user.Password {
 
+		if v.Username != user.Username {
+			if v.Username != "admin" {
+				return c.String(http.StatusUnauthorized, "Wrong Username")
+			}
+		}
+
+		if v.Password != user.Password {
+			if v.Password != "12345" {
+				return c.String(http.StatusUnauthorized, "Wrong PassWord")
+			}
+		}
+
+		if v.Username == user.Username && v.Password == user.Password {
 			if v.Username == "admin" && v.Password == "12345" {
 				token, err = auth.CreateToken(user.Username, true)
 				if err != nil {
@@ -34,17 +46,6 @@ func Login(c echo.Context) error {
 				})
 			}
 
-			// if user.Username != "admin" && user.Password != "12345" {
-			// 	return c.String(http.StatusUnauthorized, "Wrong Password and Username")
-			// }
-
-			// if user.Username != "admin" {
-			// 	return c.String(http.StatusUnauthorized, "WrongUsername")
-			// }
-			// if user.Password != "12345" {
-			// 	return c.String(http.StatusUnauthorized, "WrongPassword")
-			// }
-
 			token, err := auth.CreateToken(user.Username, false)
 
 			if err != nil {
@@ -52,9 +53,9 @@ func Login(c echo.Context) error {
 			}
 
 			return c.JSON(http.StatusOK, map[string]string{
-				"token": token, "Admin": "Not						 Admin",
+				"token": token, "Admin": "Not Admin",
 			})
 		}
 	}
-	return c.String(http.StatusUnauthorized, "Wrong Username or Password!!!")
+	return c.String(http.StatusUnauthorized, "nil")
 }
