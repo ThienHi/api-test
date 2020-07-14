@@ -14,7 +14,7 @@ func Init() *echo.Echo {
 	// e.Use(middleware.Logger())
 
 	isLogedIn := middleware.JWT([]byte("secret"))
-	// isAdmin := mdw.IsAdminMdw
+	// isAdmin := middleware.JWT([]byte("mysecret"))
 
 	e.GET("/users", api.GetUsers, isLogedIn)
 

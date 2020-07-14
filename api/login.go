@@ -20,6 +20,7 @@ func Login(c echo.Context) error {
 
 	var err error
 	var token string
+	var refreshtoken string
 
 	for _, v := range users {
 
@@ -38,15 +39,18 @@ func Login(c echo.Context) error {
 		if v.Username == user.Username && v.Password == user.Password {
 			if v.Username == "admin" && v.Password == "12345" {
 				token, err = auth.CreateToken(user.Username, true)
+				refreshtoken, err = auth.CreateRefreshToken(user.Username, true)
 				if err != nil {
 					return err
 				}
 				return c.JSON(http.StatusOK, map[string]string{
 					"token": token, "Admin": "Admin",
+					"refreshtoken": refreshtoken,
 				})
 			}
 
 			token, err := auth.CreateToken(user.Username, false)
+			refreshtoken, err = auth.CreateRefreshToken(user.Username, false)
 
 			if err != nil {
 				return err
@@ -54,8 +58,9 @@ func Login(c echo.Context) error {
 
 			return c.JSON(http.StatusOK, map[string]string{
 				"token": token, "Admin": "Not Admin",
+				"refreshtoken": refreshtoken,
 			})
 		}
 	}
-	return c.String(http.StatusUnauthorized, "nil")
+	return echo.ErrUnauthorized
 }
